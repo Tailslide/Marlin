@@ -130,8 +130,10 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
-#endif
+  // FSIGAP - set motherboard
+  #define MOTHERBOARD BOARD_RAMBO
+  //#define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
 //#define CUSTOM_MACHINE_NAME "3D Printer"
@@ -147,7 +149,8 @@
 #define EXTRUDERS 1
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
-#define DEFAULT_NOMINAL_FILAMENT_DIA 3.0
+//#define DEFAULT_NOMINAL_FILAMENT_DIA 3.0
+#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75 // FSIGAP
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
 //#define SINGLENOZZLE
@@ -405,13 +408,16 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 1
+/* #define TEMP_SENSOR_0 1 */
+/* FSIGAP - 2017-09-11 titan aero reconfig */
+#define TEMP_SENSOR_0 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
 #define TEMP_SENSOR_5 0
-#define TEMP_SENSOR_BED 0
+// FSIGAP - New silicone bed heater NTC3950 100K resistance at 25 degrees
+#define TEMP_SENSOR_BED 11
 #define TEMP_SENSOR_CHAMBER 0
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
@@ -444,13 +450,14 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 275
+//#define HEATER_0_MAXTEMP 275
+#define HEATER_0_MAXTEMP 285 // FSIGAP - titan areo docs say 285 ok. Over 295 can damage thermistor
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
 #define HEATER_4_MAXTEMP 275
 #define HEATER_5_MAXTEMP 275
-#define BED_MAXTEMP      150
+#define BED_MAXTEMP      120 // FSIGAP - maximum for flexplate system
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -464,7 +471,10 @@
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 #if ENABLED(PIDTEMP)
   //#define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
-  //#define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+  
+  /// FSIGAP
+  #define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+
   //#define PID_DEBUG             // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1        // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
   //#define SLOW_PWM_HEATERS      // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
@@ -475,10 +485,22 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
+  // stored in EEPROM but haven't updated firmware with this yet
+
+  // FSIGAP - 2019-12-12 Same again with 50% part fan
+  #define DEFAULT_Kp 29.56
+  #define DEFAULT_Ki 1.98
+  #define DEFAULT_Kd 110.17
+
+  // FSIGAP - 2019-10-24 titan aero after thermistor change and cartridge change, fan unplugged
+  //#define DEFAULT_Kp 31.92
+  //#define DEFAULT_Ki 2.23
+  //#define DEFAULT_Kd 114.41
+
   // Ultimaker
-  #define DEFAULT_Kp 22.2
-  #define DEFAULT_Ki 1.08
-  #define DEFAULT_Kd 114
+  //#define DEFAULT_Kp 22.2
+  //#define DEFAULT_Ki 1.08
+  //#define DEFAULT_Kd 114
 
   // MakerGear
   //#define DEFAULT_Kp 7.0
@@ -509,7 +531,8 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+ // FSIGAP - enable bed PID
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -525,11 +548,17 @@
   //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
+
+  //FSIGAP - Autottune values 24v silicone heater 220mmx220mm         
+  #define DEFAULT_bedKp 156.95
+  #define DEFAULT_bedKi 29.03
+  #define DEFAULT_bedKd 212.14
+
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+  //#define DEFAULT_bedKp 10.00
+  //#define DEFAULT_bedKi .023
+  //#define DEFAULT_bedKd 305.4
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -604,10 +633,12 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-#define USE_XMIN_PLUG
+//FSIGAP - moved X endstop 2017-10-25
+//#define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
-//#define USE_XMAX_PLUG
+//FSIGAP - moved X endstop 2017-10-25
+#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
 
@@ -718,14 +749,23 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
+/* FSIGAP - suggested by  https://www.thingiverse.com/groups/flsun-prusa-user-group/topic:10654 */
+/* #define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,156}  // default steps per unit for Ultimaker*/
+/*FSIGAP - 2017-09-11 - switched to titan aero */
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,400}  // default steps per unit for Ultimaker*/
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+//#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+// FSIGAP - change max feed rate
+//#define DEFAULT_MAX_FEEDRATE          {500, 400, 5, 25}    // (mm/sec)
+// FSIGAP - bumped max extrusion to 60 based on 8mm/s^3 = 3.14/4 * 0.4 * 0.4 * FR from  https://forum.e3d-online.com/threads/what-is-the-maximum-extrusion-rate-in-titan-aero-1-75mm.2686/
+//#define DEFAULT_MAX_FEEDRATE          {600, 500, 25, 60}    // (mm/sec)
+#define DEFAULT_MAX_FEEDRATE          {600, 500, 30, 70}    // (mm/sec)
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -738,7 +778,16 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+//#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+/* FSIGAP - suggested by  https://www.thingiverse.com/groups/flsun-prusa-user-group/topic:10654 */
+//#define DEFAULT_MAX_ACCELERATION      {1000,1000,50,500}    // X, Y, Z, E maximum start speed for accelerated moves. E 
+//FSIGAP - titan aero
+//#define DEFAULT_MAX_ACCELERATION      {750,750,50,3000}    // X, Y, Z, E maximum start speed for accelerated moves. 
+//#define DEFAULT_MAX_ACCELERATION      {1500,1500,50,3000}    // X, Y, Z, E maximum start speed for accelerated moves. - updated 2017-03-005 FSIGAP
+//#define DEFAULT_MAX_ACCELERATION      {4000,4000,50,3000}    // X, Y, Z, E maximum start speed for accelerated moves. - updated 2018-03-005 FSIGAP
+//#define DEFAULT_MAX_ACCELERATION      {3000,3000,50,3000}
+//#define DEFAULT_MAX_ACCELERATION      {17000,17000,50,10000}  // X, Y, Z, E maximum start speed for accelerated moves. - updated 2018-09-13 FSIGAP
+#define DEFAULT_MAX_ACCELERATION      {17000,9000,50,10000}  // X, Y, Z, E maximum start speed for accelerated moves. - updated 2018-09-13 FSIGAP Y shifting
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -755,8 +804,10 @@
  */
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
-
+//FSIGAP - changed from 3000
+//#define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration for travel (non printing) moves
+//FSIGAP - changed from 4000
+#define DEFAULT_TRAVEL_ACCELERATION   5000    // X, Y, Z acceleration for travel (non printing) moves
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -765,6 +816,10 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
+  /* FSIGAP from-http://forums.reprap.org/read.php?262,184678 */
+// 040213_XY_changed to 15.0, to reduce vibration in small detail/thin walled prints, reduce any corner print quality issues and layer offset issues.
+ // 060113_XY_changed to 10.0, to reduce jerk in small detail/thin walled prints and reduce any layer offset shifting. FIXED offset layer issue !!!
+ 
 //#define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 10.0
@@ -853,6 +908,8 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
+/* FSIGAP - Bed levelling 2017-09-08 */
+// FSIGAP - commented out - bltouch
 //#define FIX_MOUNTED_PROBE
 
 /**
@@ -864,7 +921,8 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-//#define BLTOUCH
+//FSIGAP - enable bltouch
+#define BLTOUCH
 
 /**
  * Touch-MI Probe by hotends.fr
@@ -921,13 +979,16 @@
  *
  * Specify a Probe position as { X, Y, Z }
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+//#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define X_PROBE_OFFSET -48
+#define NOZZLE_TO_PROBE_OFFSET { X_PROBE_OFFSET, 0, -0.1 }  // FSIGAP - BLTOUCH
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
 
 // X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 8000
+// FSIGAP - used to be 8000
+#define XY_PROBE_SPEED 9000
 
 // Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
@@ -944,7 +1005,8 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+// FSIGAP - was commented out
+#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -961,9 +1023,13 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
+//FSIGAP - reduce these two values to 3 to speed up probing
+#define Z_CLEARANCE_DEPLOY_PROBE   3 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES  3 // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     3 // Z Clearance between multiple probes
+
+//#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
+//#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
@@ -973,7 +1039,8 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+// FSIGAP
+#define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -994,7 +1061,8 @@
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
 //#define PROBING_STEPPERS_OFF      // Turn steppers off (unless needed to hold position) when probing
-//#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
+//FSIGAP - used to be disabled
+#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 // :{ 0:'Low', 1:'High' }
@@ -1020,9 +1088,14 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+//#define INVERT_X_DIR false
+// FSIGAP - make steppers go correct direction
+//#define INVERT_Y_DIR true
+//#define INVERT_Z_DIR false
+#define INVERT_X_DIR true
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR true
+// END FSIGAP
 
 // @section extruder
 
@@ -1045,7 +1118,9 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR -1
+//#define X_HOME_DIR -1
+//FSIGAP - moved endstop 2017-10-25
+#define X_HOME_DIR 1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 
@@ -1061,7 +1136,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 200
+#define Z_MAX_POS 190  // FSIGAP - used to be 200
 
 /**
  * Software Endstops
@@ -1100,7 +1175,8 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+//FSIGAP - enable filament runout sensor 2018-03-04
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.
@@ -1109,7 +1185,9 @@
 
   // Set one or more commands to execute on filament runout.
   // (After 'M412 H' Marlin will ask the host to handle the process.)
-  #define FILAMENT_RUNOUT_SCRIPT "M600"
+  //#define FILAMENT_RUNOUT_SCRIPT "M600"
+  // FSIGAP - 2018-03-04 - position to load filament (Z+10)
+  #define FILAMENT_RUNOUT_SCRIPT "M600 X100 Y10 Z10"
 
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
@@ -1164,7 +1242,7 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
+#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
@@ -1196,7 +1274,8 @@
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  //#define G26_MESH_VALIDATION
+  // FSIGAP
+  #define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for the G26 Mesh Validation Tool.
@@ -1215,7 +1294,7 @@
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
-
+ 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
     // Beyond the probed grid, continue the implied tilt?
@@ -1240,10 +1319,17 @@
   //========================= Unified Bed Leveling ============================
   //===========================================================================
 
-  //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
+ // FSIGAP - enabled this
+  #define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
+  
+  // FSIGAP - prevent bed crash by increasing inset
+  //#define MESH_INSET 1              // Mesh inset margin on print area/
+  #define MESH_INSET 20              // Mesh inset margin on print area
 
-  #define MESH_INSET 1              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
+//  #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
+// FSGIAP - reduce from 10 to 4 for simplicity
+  #define GRID_MAX_POINTS_X 4      // Don't use more than 15 points per axis, implementation limited.
+
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
@@ -1257,8 +1343,9 @@
   //===========================================================================
   //=================================== Mesh ==================================
   //===========================================================================
-
-  #define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
+//FSIGAP - increated mesh inset from 10
+  #define MESH_INSET 30          // Set Mesh bounds as an inset region of the bed
+  //#define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
   #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
@@ -1270,7 +1357,7 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-//#define LCD_BED_LEVELING
+#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
@@ -1315,15 +1402,24 @@
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-//#define Z_SAFE_HOMING
+/* FSIGAP - bed levelling - comment out for titan aero 2017-09-11 */
+#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)    // X point for Z homing when homing all axes (G28).
-  #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
+  //#define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)    // X point for Z homing when homing all axes (G28).
+  //#define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
+
+  // FSIGAP - titan aero make sure it levels on metal square -- or black with IR sensor
+  #define Z_SAFE_HOMING_X_POINT X_PROBE_OFFSET +100    // X point for Z homing when homing all axis (G28).
+  // FSIGAP - new X extrusion #define Z_SAFE_HOMING_Y_POINT 10   // Y point for Z homing when homing all axis (G28).
+  // FSIGAP - changed to bltouch make safe homing Y=10
+  #define Z_SAFE_HOMING_Y_POINT 10   // Y point for Z homing when homing all axis (G28).
 #endif
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
+//#define HOMING_FEEDRATE_Z  (4*60)
+//FSIGAP bumped up
 #define HOMING_FEEDRATE_Z  (4*60)
 
 // Validate that endstops are triggered on homing moves
@@ -1401,7 +1497,9 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-//#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+
+//FSIGAP - enable
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #if ENABLED(EEPROM_SETTINGS)
@@ -1457,7 +1555,8 @@
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
-//#define NOZZLE_PARK_FEATURE
+//FSIGAP - Needed for pause on filament runout
+#define NOZZLE_PARK_FEATURE
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
@@ -1504,18 +1603,22 @@
  * Attention: EXPERIMENTAL. G-code arguments may change.
  *
  */
-//#define NOZZLE_CLEAN_FEATURE
+//FSIGAP - enable
+#define NOZZLE_CLEAN_FEATURE
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
   // Default number of pattern repetitions
-  #define NOZZLE_CLEAN_STROKES  12
+  #define NOZZLE_CLEAN_STROKES  6
 
   // Default number of triangles
   #define NOZZLE_CLEAN_TRIANGLES  3
 
   // Specify positions as { X, Y, Z }
-  #define NOZZLE_CLEAN_START_POINT {  30, 30, (Z_MIN_POS + 1) }
-  #define NOZZLE_CLEAN_END_POINT   { 100, 60, (Z_MIN_POS + 1) }
+  //#define NOZZLE_CLEAN_START_POINT {  30, 30, (Z_MIN_POS + 1) }
+  //#define NOZZLE_CLEAN_END_POINT   { 100, 60, (Z_MIN_POS + 1) }
+  // FSIGAP - cleaning strip at front right
+  #define NOZZLE_CLEAN_START_POINT { 170, 0, (Z_MIN_POS + 7)}
+  #define NOZZLE_CLEAN_END_POINT   { 200, 5, (Z_MIN_POS + 7)}
 
   // Circular pattern radius
   #define NOZZLE_CLEAN_CIRCLE_RADIUS 6.5
@@ -1618,7 +1721,8 @@
  * you must uncomment the following option or it won't work.
  *
  */
-//#define SDSUPPORT
+//FSIGAP - enabled SD
+#define SDSUPPORT
 
 /**
  * SD CARD: SPI SPEED
@@ -1675,7 +1779,9 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-//#define REVERSE_ENCODER_DIRECTION
+//FSIGAP - VIKI - make clockwise move down 2018-02-15
+#define REVERSE_ENCODER_DIRECTION
+
 
 //
 // This option reverses the encoder direction for navigating LCD menus.
@@ -1706,7 +1812,8 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-//#define SPEAKER
+//FSIGAP
+#define SPEAKER
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -1717,6 +1824,9 @@
 //
 //#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
 //#define LCD_FEEDBACK_FREQUENCY_HZ 5000
+// FSIGAP - 2018-02-15 - Enable speaker in VIKI
+#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100
+#define LCD_FEEDBACK_FREQUENCY_HZ 1000
 
 //=============================================================================
 //======================== LCD / Controller Selection =========================
@@ -1882,7 +1992,8 @@
 // Viki 2.0 or mini Viki with Graphic LCD
 // http://panucatt.com
 //
-//#define VIKI2
+//FSIGAP - enabled viki
+#define VIKI2
 //#define miniVIKI
 
 //
@@ -2103,7 +2214,8 @@
 // Temperature status LEDs that display the hotend and bed temperature.
 // If all hotends, bed temperature, and target temperature are under 54C
 // then the BLUE led is on. Otherwise the RED led is on. (1C hysteresis)
-//#define TEMP_STAT_LEDS
+// FSIGAP  2018-02-15 - temperature LED on VIKI2
+#define TEMP_STAT_LEDS
 
 // SkeinForge sends the wrong arc g-codes when using Arc Point as fillet procedure
 //#define SF_ARC_FIX

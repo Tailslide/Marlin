@@ -399,7 +399,8 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#define E0_AUTO_FAN_PIN -1
+//#define E0_AUTO_FAN_PIN -1 //FSIGAP - 2017-11-02- rambo
+#define E0_AUTO_FAN_PIN 2 //FSIGAP - 2017-11-02- rambo
 #define E1_AUTO_FAN_PIN -1
 #define E2_AUTO_FAN_PIN -1
 #define E3_AUTO_FAN_PIN -1
@@ -600,7 +601,8 @@
 
   // Safety: The probe needs time to recognize the command.
   //         Minimum command delay (ms). Enable and increase if needed.
-  //#define BLTOUCH_DELAY 500
+  // FSIGAP - used to be disabled
+  #define BLTOUCH_DELAY 200
 
   /**
    * Settings for BLTOUCH Classic 1.2, 1.3 or BLTouch Smart 1.0, 2.0, 2.2, 3.0, 3.1, and most clones:
@@ -642,7 +644,8 @@
    * This feature was designed for Delta's with very fast Z moves however higher speed cartesians may function
    * If the machine cannot raise the probe fast enough after a trigger, it may enter a fault state.
    */
-  //#define BLTOUCH_HS_MODE
+  //FSIGAP - used to be disabled
+  #define BLTOUCH_HS_MODE
 
   // Safety: Enable voltage mode settings in the LCD menu.
   //#define BLTOUCH_LCD_VOLTAGE_MENU
@@ -861,6 +864,26 @@
 //#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
+//#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
+//FSIGAP - RAMBO-2017-10-21
+//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2017-11-07 ran a little hot on fast prints
+//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,70,70 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - need a little more torque
+//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+//#define DIGIPOT_MOTOR_CURRENT { 145,145,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - Y axis missing steps
+//#define DIGIPOT_MOTOR_CURRENT { 135,155,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - Y axis missing steps
+//#define DIGIPOT_MOTOR_CURRENT { 135,165,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - Y axis missing steps
+//#define DIGIPOT_MOTOR_CURRENT { 135,170,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-09-05 Y axis missing steps?
+//#define DIGIPOT_MOTOR_CURRENT { 155, 170,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-09-14 Increase max X accel
+//#define DIGIPOT_MOTOR_CURRENT { 170, 170,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-09-14 Increase max X accel
+//#define DIGIPOT_MOTOR_CURRENT { 170, 185,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-09-14 Skipped Y steps
+//#define DIGIPOT_MOTOR_CURRENT { 170, 195,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-09-14 X too hot, Skipped Y steps
+//#define DIGIPOT_MOTOR_CURRENT { 170, 225,135,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-11-15 Skipped Y steps added heat sink
+//#define DIGIPOT_MOTOR_CURRENT { 170, 225,185,80,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-12-15 Skipping Z steps
+#define DIGIPOT_MOTOR_CURRENT { 170, 225,185,100,80 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A) - FSIGAP - 2018-12-24 More torque for extruder.. always use fan
+//FSIGAP Stepper Model: SL42STH40-1504A , (rated at 1.5A per phase)
+
+
 // Use an I2C based DIGIPOT (e.g., Azteeg X3 Pro)
 //#define DIGIPOT_I2C
 #if ENABLED(DIGIPOT_I2C) && !defined(DIGIPOT_I2C_ADDRESS_A)
@@ -954,6 +977,8 @@
 
 // Add an 'M73' G-code to set the current percentage
 //#define LCD_SET_PROGRESS_MANUALLY
+  // FSIGAP - allow octoprint plugin to set progress manually
+#define LCD_SET_PROGRESS_MANUALLY
 
 // Show the E position (filament used) during printing
 //#define LCD_SHOW_E_TOTAL
@@ -1412,11 +1437,14 @@
  * See http://marlinfw.org/docs/features/lin_advance.html for full instructions.
  * Mention @Sebastianv650 on GitHub to alert the author of any issues.
  */
-//#define LIN_ADVANCE
+ // FSIGAP - 2018-03-02 enable lin advance
+#define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
-  #define LIN_ADVANCE_K 0.22    // Unit: mm compression per 1mm/s extruder speed
-  //#define LA_DEBUG            // If enabled, this will generate debug information output over USB.
+  // FSIGAP - calibrated for titan aero PLA:
+  //#define LIN_ADVANCE_K 0.22  // Unit: mm compression per 1mm/s extruder speed
+  #define LIN_ADVANCE_K 0.06  // Unit: mm compression per 1mm/s extruder speed
+  //#define LA_DEBUG          // If enabled, this will generate debug information output over USB.
 #endif
 
 // @section leveling
@@ -1451,10 +1479,10 @@
  * the probe to be unable to reach any points.
  */
 #if PROBE_SELECTED && !IS_KINEMATIC
-  //#define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_RIGHT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_FRONT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_BACK MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_RIGHT MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_FRONT MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_BACK MIN_PROBE_EDGE
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
@@ -1722,7 +1750,8 @@
  * Requires NOZZLE_PARK_FEATURE.
  * This feature is required for the default FILAMENT_RUNOUT_SCRIPT.
  */
-//#define ADVANCED_PAUSE_FEATURE
+// FSIGAP - added for filament runout script -2018-03-04
+#define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
@@ -1743,8 +1772,10 @@
                                                   //   For direct drive, the full length of the nozzle.
   //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
   #define ADVANCED_PAUSE_PURGE_FEEDRATE        3  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
-  #define ADVANCED_PAUSE_PURGE_LENGTH         50  // (mm) Length to extrude after loading.
-                                                  //   Set to 0 for manual extrusion.
+  //FSIGAP - 2018-03-04 - I like to manually push through filament
+  #define ADVANCED_PAUSE_PURGE_LENGTH 0    // Extrude filament length in mm after filament is loaded over the hotend,
+  //#define ADVANCED_PAUSE_PURGE_LENGTH         50  // (mm) Length to extrude after loading.
+                                                    //   Set to 0 for manual extrusion.
                                                   //   Filament can be extruded repeatedly from the Filament Change menu
                                                   //   until extrusion is consistent, and to purge old filament.
   #define ADVANCED_PAUSE_RESUME_PRIME          0  // (mm) Extra distance to prime nozzle after returning from park.

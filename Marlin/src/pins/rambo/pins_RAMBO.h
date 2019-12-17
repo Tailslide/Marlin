@@ -50,7 +50,10 @@
 //
 // Servos
 //
-#define SERVO0_PIN         22   // Motor header MX1
+//FSIGAP - getting 3dtouch working
+#define SERVO0_PIN         30     // ZMax
+//#define SERVO0_PIN         22   // Motor header MX1
+
 #define SERVO1_PIN         23   // Motor header MX2
 #define SERVO2_PIN         24   // Motor header MX3
 #define SERVO3_PIN          5   // PWM header pin 5
@@ -63,7 +66,8 @@
 #define Y_MIN_PIN          11
 #define Y_MAX_PIN          23
 #define Z_MIN_PIN          10
-#define Z_MAX_PIN          30
+//FSIGAP - getting 3dtouch working
+//#define Z_MAX_PIN          30
 
 //
 // Z Probe (when not Z_MIN_PIN)
@@ -132,8 +136,9 @@
   #define FAN_PIN           8
 #endif
 #define FAN1_PIN            6
-#define FAN2_PIN            2
-
+// FSIGAP - 2017-11-02 - Rambo
+//#define FAN2_PIN            2
+#define FIL_RUNOUT_PIN     23
 //
 // Misc. Functions
 //
