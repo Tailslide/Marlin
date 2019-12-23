@@ -483,12 +483,16 @@
   #endif
 #endif
 
-//#define Y_DUAL_STEPPER_DRIVERS
+//FSIGAP
+#define Y_DUAL_STEPPER_DRIVERS
+
 #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
   #define INVERT_Y2_VS_Y_DIR true   // Set 'true' if Y motors should rotate in opposite directions
-  //#define Y_DUAL_ENDSTOPS
+  //FSIGAP
+  #define Y_DUAL_ENDSTOPS
   #if ENABLED(Y_DUAL_ENDSTOPS)
     #define Y2_USE_ENDSTOP _YMAX_
+    //FSIGAP - Adjust for endstop placement
     #define Y_DUAL_ENDSTOPS_ADJUSTMENT  0
   #endif
 #endif
@@ -702,7 +706,7 @@
 // Default stepper release if idle. Set to 0 to deactivate.
 // Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
 // Time can be set by M18 and M84.
-#define DEFAULT_STEPPER_DEACTIVE_TIME 120
+#define DEFAULT_STEPPER_DEACTIVE_TIME 600 // FSIGAP - was 120
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set to false if the nozzle will fall down on your printed part when print has finished.
@@ -858,6 +862,8 @@
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
 //#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
+//FSIGAP
+#define DIGIPOT_MOTOR_CURRENT { 185,185,185,185,185 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
@@ -987,7 +993,8 @@
   // Note: This is always disabled for ULTIPANEL (except ELB_FULL_GRAPHIC_CONTROLLER).
   #define SD_DETECT_INVERTED
 
-  #define SD_FINISHED_STEPPERRELEASE true          // Disable steppers when SD Print is finished
+  #define SD_FINISHED_STEPPERRELEASE false // FSIGAP
+  //#define SD_FINISHED_STEPPERRELEASE true          // Disable steppers when SD Print is finished
   #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E" // You might want to keep the Z enabled so your bed stays in place.
 
   // Reverse SD sort to show "more recent" files first, according to the card's FAT.
@@ -1490,7 +1497,8 @@
 //
 #define ARC_SUPPORT               // Disable this feature to save ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
-  #define MM_PER_ARC_SEGMENT  1   // Length of each arc segment
+  #define MM_PER_ARC_SEGMENT  0.5   // FSIGAP
+  //#define MM_PER_ARC_SEGMENT  1   // Length of each arc segment
   #define MIN_ARC_SEGMENTS   24   // Minimum number of segments in a complete circle
   #define N_ARC_CORRECTION   25   // Number of interpolated segments between corrections
   //#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles
@@ -2492,12 +2500,12 @@
  * Enables G53 and G54-G59.3 commands to select coordinate systems
  * and G92.1 to reset the workspace to native machine space.
  */
-//#define CNC_COORDINATE_SYSTEMS
+#define CNC_COORDINATE_SYSTEMS // FSIGAP
 
 /**
  * Auto-report temperatures with M155 S<seconds>
  */
-#define AUTO_REPORT_TEMPERATURES
+//#define AUTO_REPORT_TEMPERATURES FSIGAP
 
 /**
  * Include capabilities in M115 output
@@ -2587,27 +2595,50 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-//#define CUSTOM_USER_MENUS
+//FSIGAP
+#define CUSTOM_USER_MENUS
+
 #if ENABLED(CUSTOM_USER_MENUS)
   //#define CUSTOM_USER_MENU_TITLE "Custom Commands"
   #define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  //FSIGAP - HOME X and Y, then drop carriage at Y=0 to align Z axis, then probe Z
+  #define USER_DESC_1 "Home XYZ drop Z align"
+  //FSIGAP update with newer homing code
+  //#define USER_GCODE_1 "G28 X Y\nM220 S100\nG0 X250Y5\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P2000\nM17\nG4 P500\nM220 S100\nG91\nG0 Z70\nG90\nG28 Z\nM220 S100\nG0 X0 Z40\nG0 Y150\nG0 Y100\nG0 Y150\nG0 X0Y10"
+  #define USER_GCODE_1 "G54\nG28 X Y\nM220 S200\nG0 X640Y0\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P3000\nG92 Z0\nM17\nM220 S100\nG91\nG0 Z70\nG90\nM280 P0 S92\nG4 P300\nM280 P0 S93\nG4 P300\nG28 Z\nG92 Z26\nM280 P0 S140\nM220 S300\nG0 X0 Z40\nM220 S100"
+//  G28 X Y\nM220 S100\nG0 X250Y5\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P2000\nM17\nG4 P500\nM220 S100\nG91\nG0 Z70\nG90\nG28 Z\nM220 S100\nG0 X0 Z40\nG0 Y150\nG0 Y100\nG0 Y150\nG0 X0Y10"
 
-  #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
-  #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  //FSIGAP
+  #define USER_DESC_2 "Reset All Coordinates"
+  #define USER_GCODE_2 "G92 X0 Y0 Z0"
 
-  #define USER_DESC_3 "Preheat for " PREHEAT_2_LABEL
-  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  //FSIGAP
+  #define USER_DESC_3 "Home Z Axis"
+  // FSIGAP - update with newer Z homing code
+  #define USER_GCODE_3 "M280 P0 S92\nG4 P300\nM280 P0 S93\nG4 P300\nG28 Z\nG92 Z26\nM280 P0 S140"
 
-  #define USER_DESC_4 "Heat Bed/Home/Level"
-  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
+  //FSIGAP
+  #define USER_DESC_4 "Home X&Y"
+  #define USER_GCODE_4 "G28 X Y"
+  
+  //FSIGAP - Add park command
+  #define USER_DESC_5 "Park"
+  #define USER_GCODE_5 "G54\nG90\nG0 Z70\nG0 X640Y0\nG0 Z10"
 
-  #define USER_DESC_5 "Home & Info"
-  #define USER_GCODE_5 "G28\nM503"
+  // #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
+  // #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+
+  //#define USER_DESC_3 "Preheat for " PREHEAT_2_LABEL
+  //#define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+
+  //#define USER_DESC_4 "Heat Bed/Home/Level"
+  //#define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
+
+  //#define USER_DESC_5 "Home & Info"
+  //#define USER_GCODE_5 "G28\nM503"
 #endif
 
 /**
