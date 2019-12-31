@@ -725,7 +725,9 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
+//FSIGAP
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 400, 100 }
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -733,8 +735,8 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
  //FSIGAP - reduce Z max feedrate to prevent skipping when feedrate maxed out and lowrider weight all near one screw
-#define DEFAULT_MAX_FEEDRATE          { 220, 220, 6, 25 } // fsigap was 120,120
-//#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 220, 220, 6, 25} // fsigap was 120,120
+//#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 220 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -749,7 +751,8 @@
  */
 //FSIGAP - reduce Z accel to prevent skipping when feedrate maxed out and lowrider weight all near one screw
 #define DEFAULT_MAX_ACCELERATION      { 400, 400, 25, 2000 }
-//#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
+//#define DEFAULT_MAX_ACCELERATION      { 400, 400, 25, 400 }
+//#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 400 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -937,10 +940,11 @@
  *
  * Specify a Probe position as { X, Y, Z }
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+// FSIGAP - was 10,10,0
+#define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 10
+#define MIN_PROBE_EDGE 0 // FSIGAP - was 10
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 8000
@@ -1075,7 +1079,7 @@
 
 // The size of the print bed
 #define X_BED_SIZE 1252   // FSIGAP 
-#define Y_BED_SIZE 1252   // FSIGAP
+#define Y_BED_SIZE 2605   // FSIGAP
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1099,7 +1103,7 @@
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
-  #define MIN_SOFTWARE_ENDSTOP_Z
+//  #define MIN_SOFTWARE_ENDSTOP_Z  // FSIGAP - disabled
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
@@ -1704,7 +1708,8 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-//#define REVERSE_ENCODER_DIRECTION
+//FSIGAP - defined
+#define REVERSE_ENCODER_DIRECTION
 
 //
 // This option reverses the encoder direction for navigating LCD menus.
