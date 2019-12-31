@@ -981,7 +981,7 @@
  */
 //#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #define X_PROBE_OFFSET -48
-#define NOZZLE_TO_PROBE_OFFSET { X_PROBE_OFFSET, 0, -0.1 }  // FSIGAP - BLTOUCH
+#define NOZZLE_TO_PROBE_OFFSET { X_PROBE_OFFSET, 0, 0.3 }  // FSIGAP - BLTOUCH
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
