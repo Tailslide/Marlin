@@ -2750,17 +2750,18 @@
 /**
  * Analog Joystick(s)
  */
-//#define JOYSTICK
+//#define JOYSTICK_DEBUG // FSIGAP
+#define JOYSTICK  //FSIGAP
 #if ENABLED(JOYSTICK)
-  #define JOY_X_PIN    5  // RAMPS: Suggested pin A5  on AUX2
-  #define JOY_Y_PIN   10  // RAMPS: Suggested pin A10 on AUX2
-  #define JOY_Z_PIN   12  // RAMPS: Suggested pin A12 on AUX2
-  #define JOY_EN_PIN  44  // RAMPS: Suggested pin D44 on AUX2
+  #define JOY_X_PIN    3  // FSIGAP changed to 3- Analog Ext 4   //RAMPS: Suggested pin A5  on AUX2
+  #define JOY_Y_PIN   4  // FSIGAP - changed to 4- Analog Ext 6  //RAMPS: Suggested pin A10 on AUX2
+  #define JOY_Z_PIN   5  // FSIGAP - changed to 5- Analog Ext 8  //RAMPS: Suggested pin A12 on AUX2
+  #define JOY_EN_PIN  4//30 // FSIGAP - changed to Z MAX endstop    // RAMPS: Suggested pin D44 on AUX2
 
   // Use M119 to find reasonable values after connecting your hardware:
-  #define JOY_X_LIMITS { 5600, 8190-100, 8190+100, 10800 } // min, deadzone start, deadzone end, max
-  #define JOY_Y_LIMITS { 5600, 8250-100, 8250+100, 11000 }
-  #define JOY_Z_LIMITS { 4800, 8080-100, 8080+100, 11550 }
+  #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
+  #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
+  #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
 #endif
 
 /**

@@ -51,7 +51,7 @@
 // Servos
 //
 
-#define SERVO0_PIN         24 // servo on X MAX
+#define SERVO0_PIN         24 // servo on X MAX - FSIGAP
 //#define SERVO0_PIN         22   // Motor header MX1
 //#define SERVO1_PIN         23   // Motor header MX2
 //#define SERVO2_PIN         24   // Motor header MX3
@@ -61,9 +61,9 @@
 // Limit Switches
 //
 #define X_MIN_PIN          12
-#define X_MAX_PIN          -1 // used to be 24, disable so we can have servo on X MAX pin
+#define X_MAX_PIN          -1 // FSIGAP-used to be 24, disable so we can have servo on X MAX pin
 #define Y_MIN_PIN          11
-#define Y_MAX_PIN          23
+#define Y_MAX_PIN          23  // FSIGAP - second Y endstop
 #define Z_MIN_PIN          10
 #define Z_MAX_PIN          -1 // FSIGAP - used to be 30, use ZMAX for PROBE if used
 
@@ -71,7 +71,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  30 
+  #define Z_MIN_PROBE_PIN  30
 #endif
 
 //
