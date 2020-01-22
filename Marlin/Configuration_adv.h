@@ -706,7 +706,7 @@
 // Default stepper release if idle. Set to 0 to deactivate.
 // Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
 // Time can be set by M18 and M84.
-#define DEFAULT_STEPPER_DEACTIVE_TIME 600 // FSIGAP - was 120
+#define DEFAULT_STEPPER_DEACTIVE_TIME 1200 // FSIGAP - was 120
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set to false if the nozzle will fall down on your printed part when print has finished.
@@ -862,9 +862,9 @@
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
 //#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
-//FSIGAP
-#define DIGIPOT_MOTOR_CURRENT { 185,185,185,185,185 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
-//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+//FSIGAP - this was too high - z released hold
+//#define DIGIPOT_MOTOR_CURRENT { 185,185,185,185,185 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+#define DIGIPOT_MOTOR_CURRENT { 140,140,140,140,140 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
 // Use an I2C based DIGIPOT (e.g., Azteeg X3 Pro)
@@ -898,6 +898,7 @@
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
   #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
+  //#define MANUAL_FEEDRATE { 4*60, 4*60, 4*60, 4*60 } // FSIGAP - Feedrates for manual moves along X, Y, Z, E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -2756,12 +2757,15 @@
   #define JOY_X_PIN    3  // FSIGAP changed to 3- Analog Ext 4   //RAMPS: Suggested pin A5  on AUX2
   #define JOY_Y_PIN   4  // FSIGAP - changed to 4- Analog Ext 6  //RAMPS: Suggested pin A10 on AUX2
   #define JOY_Z_PIN   5  // FSIGAP - changed to 5- Analog Ext 8  //RAMPS: Suggested pin A12 on AUX2
-  #define JOY_EN_PIN  4//30 // FSIGAP - changed to Z MAX endstop    // RAMPS: Suggested pin D44 on AUX2
+  #define JOY_EN_PIN  4  //30 // FSIGAP - changed to Z MAX endstop    // RAMPS: Suggested pin D44 on AUX2
 
   // Use M119 to find reasonable values after connecting your hardware:
-  #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
-  #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
-  #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
+  // #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
+  // #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
+  // #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
+  #define JOY_X_LIMITS { 4600, 8200-100, 8200+100, 11700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
+  #define JOY_Y_LIMITS { 5300, 8800-100, 8800+100, 12000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
+  #define JOY_Z_LIMITS { 4800, 8880-100, 8880+100, 12850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
 #endif
 
 /**
