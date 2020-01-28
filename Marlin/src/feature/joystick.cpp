@@ -71,19 +71,45 @@ Joystick joystick;
 
 #if HAS_JOY_ADC_X || HAS_JOY_ADC_Y || HAS_JOY_ADC_Z
 
-  void Joystick::calculate(xyz_float_t &norm_jog) {
+  void Joystick::calculate(xyz_float_t &norm_jog, xyz_int_t &avg_raw) {
     // Do nothing if enable pin (active-low) is not LOW
     #if HAS_JOY_ADC_EN
       if (READ(JOY_EN_PIN)) return;
     #endif
 
-    auto _normalize_joy = [](float &axis_jog, const int16_t raw, const int16_t (&joy_limits)[4]) {
-      if (WITHIN(raw, joy_limits[0], joy_limits[3])) {
+    auto _normalize_joy = [](float &axis_jog, int16_t &avg_raw, const int16_t raw, const int16_t (&joy_limits)[4]) {
+      //int16_t unraw = raw;
+      #ifndef JOYSTICK_EXPONENTIAL_SMOOTHING
+        avg_raw = raw;
+      #else
+      if (avg_raw ==-1 ) 
+        avg_raw = raw;
+      else
+        avg_raw = JOYSTICK_EXPONENTIAL_SMOOTHING_ALPHA * (float)raw 
+                  + (1.0F-JOYSTICK_EXPONENTIAL_SMOOTHING_ALPHA) * (float)avg_raw;    //exponential smoothing
+      #endif
+#ifdef JOYSTICK_NEVER_CLIP
+      if (avg_raw < joy_limits[0]) avg_raw = joy_limits[0];
+      if (avg_raw > joy_limits[3]) avg_raw = joy_limits[3];
+#endif
+      int16_t minlimit =joy_limits[0];
+      int16_t maxlimit = joy_limits[3];
+      // check for overflow
+#if JOYSTICK_POT_MARGIN>0
+      if ((joy_limits[0] >JOYSTICK_POT_MARGIN) && ((INT16_MAX-joy_limits[3]) > JOYSTICK_POT_MARGIN))
+      {
+        minlimit=  joy_limits[0]-JOYSTICK_POT_MARGIN;
+        maxlimit=  joy_limits[3]+JOYSTICK_POT_MARGIN;
+      }
+#endif
+  
+      if (WITHIN(avg_raw,minlimit, maxlimit)) 
+      {
         // within limits, check deadzone
-        if (raw > joy_limits[2])
-          axis_jog = (raw - joy_limits[2]) / float(joy_limits[3] - joy_limits[2]);
-        else if (raw < joy_limits[1])
-          axis_jog = (raw - joy_limits[1]) / float(joy_limits[1] - joy_limits[0]);  // negative value
+        if (avg_raw > joy_limits[2])
+          axis_jog = (avg_raw - joy_limits[2]) / float(joy_limits[3] - joy_limits[2]);
+        else if (avg_raw < joy_limits[1])
+          axis_jog = (avg_raw - joy_limits[1]) / float(joy_limits[1] - joy_limits[0]);  // negative value
         // Map normal to jog value via quadratic relationship
         axis_jog = SIGN(axis_jog) * sq(axis_jog);
       }
@@ -91,15 +117,15 @@ Joystick joystick;
 
     #if HAS_JOY_ADC_X
       static constexpr int16_t joy_x_limits[4] = JOY_X_LIMITS;
-      _normalize_joy(norm_jog.x, x.raw, joy_x_limits);
+      _normalize_joy(norm_jog.x, avg_raw.x, x.raw, joy_x_limits);
     #endif
     #if HAS_JOY_ADC_Y
       static constexpr int16_t joy_y_limits[4] = JOY_Y_LIMITS;
-      _normalize_joy(norm_jog.y, y.raw, joy_y_limits);
+      _normalize_joy(norm_jog.y, avg_raw.y, y.raw, joy_y_limits);
     #endif
     #if HAS_JOY_ADC_Z
       static constexpr int16_t joy_z_limits[4] = JOY_Z_LIMITS;
-      _normalize_joy(norm_jog.z, z.raw, joy_z_limits);
+      _normalize_joy(norm_jog.z, avg_raw.z, z.raw, joy_z_limits);
     #endif
   }
 
@@ -130,10 +156,10 @@ Joystick joystick;
     // Jog are initialized to zero and handling input can update values but doesn't have to
     // You could use a two-axis joystick and a one-axis keypad and they might work together
     xyz_float_t norm_jog{0};
-
+    xyz_int_t avg_raw{-1,-1,-1};
     // Use ADC values and defined limits. The active zone is normalized: -1..0 (dead) 0..1
     #if HAS_JOY_ADC_X || HAS_JOY_ADC_Y || HAS_JOY_ADC_Z
-      joystick.calculate(norm_jog);
+      joystick.calculate(norm_jog, avg_raw);
     #endif
 
     // Other non-joystick poll-based jogging could be implemented here
@@ -145,6 +171,7 @@ Joystick joystick;
 
     // norm_jog values of [-1 .. 1] maps linearly to [-feedrate .. feedrate]
     xyz_float_t move_dist{0};
+    
     float hypot2 = 0;
     LOOP_XYZ(i) if (norm_jog[i]) {
       move_dist[i] = seg_time * norm_jog[i] *

@@ -31,6 +31,10 @@
 #include "../module/temperature.h"
 
 //#define JOYSTICK_DEBUG
+#define JOYSTICK_POT_MARGIN 0 // range above and below limits considered "safe"
+#define JOYSTICK_NEVER_CLIP // never clip values above or below min/max
+#define JOYSTICK_EXPONENTIAL_SMOOTHING // smooth readings
+#define JOYSTICK_EXPONENTIAL_SMOOTHING_ALPHA 0.01F // smaller values smooth more
 
 class Joystick {
   friend class Temperature;
@@ -48,7 +52,7 @@ class Joystick {
     #if ENABLED(JOYSTICK_DEBUG)
       static void report();
     #endif
-    static void calculate(xyz_float_t &norm_jog);
+    static void calculate(xyz_float_t &norm_jog, xyz_int_t &avg_raw);
     static void inject_jog_moves();
 };
 

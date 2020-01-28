@@ -1538,8 +1538,8 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MINIMUM_STEPPER_POST_DIR_DELAY 650
-//#define MINIMUM_STEPPER_PRE_DIR_DELAY 650
+#define MINIMUM_STEPPER_POST_DIR_DELAY 200
+#define MINIMUM_STEPPER_PRE_DIR_DELAY 200
 
 /**
  * Minimum stepper driver pulse width (in µs)
@@ -1552,7 +1552,7 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MINIMUM_STEPPER_PULSE 2
+#define MINIMUM_STEPPER_PULSE 1
 
 /**
  * Maximum stepping rate (in Hz) the stepper driver allows
@@ -1566,7 +1566,7 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MAXIMUM_STEPPER_RATE 250000
+#define MAXIMUM_STEPPER_RATE 500000
 
 // @section temperature
 
@@ -2763,9 +2763,9 @@
   // #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
   // #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
   // #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
-  #define JOY_X_LIMITS { 4600, 8200-100, 8200+100, 11700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
-  #define JOY_Y_LIMITS { 5300, 8800-100, 8800+100, 12000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
-  #define JOY_Z_LIMITS { 4800, 8880-100, 8880+100, 12850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
+  #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
+  #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
+  #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
 #endif
 
 /**
