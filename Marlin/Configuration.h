@@ -981,7 +981,7 @@
  */
 //#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #define X_PROBE_OFFSET -48
-#define NOZZLE_TO_PROBE_OFFSET { X_PROBE_OFFSET, 0, 0.3 }  // FSIGAP - BLTOUCH
+#define NOZZLE_TO_PROBE_OFFSET { X_PROBE_OFFSET, 0, 0.1 }  // FSIGAP - BLTOUCH
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -1032,7 +1032,8 @@
 //#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+// FSIGAP - need better rods for bed
+#define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
