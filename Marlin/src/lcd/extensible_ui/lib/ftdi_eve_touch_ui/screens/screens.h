@@ -232,7 +232,7 @@ class SpinnerDialogBox : public DialogBoxBaseClass, public CachedScreen<SPINNER_
     static void enqueueAndWait_P(const progmem_str message, const progmem_str commands);
 };
 
-#if DISABLED(TOUCH_UI_LULZBOT_BIO) && DISABLED(TOUCH_UI_COCOA_PRESS)
+#if NONE(TOUCH_UI_LULZBOT_BIO, TOUCH_UI_COCOA_PRESS)
 class StatusScreen : public BaseScreen, public CachedScreen<STATUS_SCREEN_CACHE,STATUS_SCREEN_DL_SIZE> {
   private:
     static void draw_axis_position(draw_mode_t);
@@ -455,7 +455,7 @@ class StepsScreen : public BaseNumericAdjustmentScreen, public CachedScreen<STEP
     static bool onTouchHeld(uint8_t tag);
 };
 
-#if HAS_TRINAMIC
+#if HAS_TRINAMIC_CONFIG
   class StepperCurrentScreen : public BaseNumericAdjustmentScreen, public CachedScreen<STEPPER_CURRENT_SCREEN_CACHE> {
     public:
       static void onRedraw(draw_mode_t);

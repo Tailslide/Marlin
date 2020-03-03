@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -42,25 +42,40 @@ Joystick joystick;
 
 #if HAS_JOY_ADC_X
   temp_info_t Joystick::x; // = { 0 }
+  #if ENABLED(INVERT_JOY_X)
+    #define JOY_X(N) (16383 - (N))
+  #else
+    #define JOY_X(N) (N)
+  #endif
 #endif
 #if HAS_JOY_ADC_Y
   temp_info_t Joystick::y; // = { 0 }
+  #if ENABLED(INVERT_JOY_Y)
+    #define JOY_Y(N) (16383 - (N))
+  #else
+    #define JOY_Y(N) (N)
+  #endif
 #endif
 #if HAS_JOY_ADC_Z
   temp_info_t Joystick::z; // = { 0 }
+  #if ENABLED(INVERT_JOY_Z)
+    #define JOY_Z(N) (16383 - (N))
+  #else
+    #define JOY_Z(N) (N)
+  #endif
 #endif
 
 #if ENABLED(JOYSTICK_DEBUG)
   void Joystick::report() {
     SERIAL_ECHOPGM("Joystick");
     #if HAS_JOY_ADC_X
-      SERIAL_ECHOPAIR_P(SP_X_STR, x.raw);
+      SERIAL_ECHOPAIR_P(SP_X_STR, JOY_X(x.raw));
     #endif
     #if HAS_JOY_ADC_Y
-      SERIAL_ECHOPAIR_P(SP_Y_STR, y.raw);
+      SERIAL_ECHOPAIR_P(SP_Y_STR, JOY_Y(y.raw));
     #endif
     #if HAS_JOY_ADC_Z
-      SERIAL_ECHOPAIR_P(SP_Z_STR, z.raw);
+      SERIAL_ECHOPAIR_P(SP_Z_STR, JOY_Z(z.raw));
     #endif
     #if HAS_JOY_ADC_EN
       SERIAL_ECHO_TERNARY(READ(JOY_EN_PIN), " EN=", "HIGH (dis", "LOW (en", "abled)");
@@ -176,7 +191,7 @@ Joystick joystick;
     LOOP_XYZ(i) if (norm_jog[i]) {
       move_dist[i] = seg_time * norm_jog[i] *
         #if ENABLED(EXTENSIBLE_UI)
-          MMM_TO_MMS(manual_feedrate_mm_m[i]);
+          manual_feedrate_mm_s[i];
         #else
           planner.settings.max_feedrate_mm_s[i];
         #endif
