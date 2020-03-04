@@ -507,7 +507,7 @@
   #if ENABLED(Y_DUAL_ENDSTOPS)
     #define Y2_USE_ENDSTOP _YMAX_
     //FSIGAP - Adjust for endstop placement
-    #define Y_DUAL_ENDSTOPS_ADJUSTMENT  -2.75
+    #define Y2_ENDSTOP_ADJUSTMENT  -2.75
   #endif
 #endif
 
@@ -3159,7 +3159,7 @@
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-#define PINS_DEBUGGING
+//#define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE
