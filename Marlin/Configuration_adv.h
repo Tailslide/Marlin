@@ -771,7 +771,8 @@
 // Backlash Compensation
 // Adds extra movement to axes on direction-changes to account for backlash.
 //
-//#define BACKLASH_COMPENSATION
+// FSIGAP - enabled
+#define BACKLASH_COMPENSATION
 #if ENABLED(BACKLASH_COMPENSATION)
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
@@ -783,11 +784,14 @@
   //#define BACKLASH_SMOOTHING_MM 3 // (mm)
 
   // Add runtime configuration and tuning of backlash values (M425)
-  //#define BACKLASH_GCODE
+  #define BACKLASH_GCODE
+
 
   #if ENABLED(BACKLASH_GCODE)
     // Measure the Z backlash when probing (G29) and set with "M425 Z"
-    #define MEASURE_BACKLASH_WHEN_PROBING
+    
+    // FSIGAP - disabled
+    //#define MEASURE_BACKLASH_WHEN_PROBING
 
     #if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
       // When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
@@ -813,25 +817,29 @@
  * Note: HOTEND_OFFSET and CALIBRATION_OBJECT_CENTER must be set to within
  *       ±5mm of true values for G425 to succeed.
  */
-//#define CALIBRATION_GCODE
+//FSIGAP - Enabled
+#define CALIBRATION_GCODE
 #if ENABLED(CALIBRATION_GCODE)
-
+//FSIGAP changed from 0.01
   #define CALIBRATION_MEASUREMENT_RESOLUTION     0.01 // mm
 
-  #define CALIBRATION_FEEDRATE_SLOW             60    // mm/m
+  #define CALIBRATION_FEEDRATE_SLOW             20    // mm/m
   #define CALIBRATION_FEEDRATE_FAST           1200    // mm/m
   #define CALIBRATION_FEEDRATE_TRAVEL         3000    // mm/m
 
   // The following parameters refer to the conical section of the nozzle tip.
-  #define CALIBRATION_NOZZLE_TIP_HEIGHT          1.0  // mm
-  #define CALIBRATION_NOZZLE_OUTER_DIAMETER      2.0  // mm
+  #define CALIBRATION_NOZZLE_TIP_HEIGHT          6.0  // mm
+  #define CALIBRATION_NOZZLE_OUTER_DIAMETER      3.175  // mm
 
+  // FSIGAP - enabled
   // Uncomment to enable reporting (required for "G425 V", but consumes PROGMEM).
-  //#define CALIBRATION_REPORTING
+  #define CALIBRATION_REPORTING
 
   // The true location and dimension the cube/bolt/washer on the bed.
-  #define CALIBRATION_OBJECT_CENTER     { 264.0, -22.0,  -2.0 } // mm
-  #define CALIBRATION_OBJECT_DIMENSIONS {  10.0,  10.0,  10.0 } // mm
+
+//FSIGAP - Set following two lines to match my 3-2-1 block
+  #define CALIBRATION_OBJECT_CENTER     { 878.52, 477.34,  35.8 } // mm
+  #define CALIBRATION_OBJECT_DIMENSIONS {  76.20,  50.8,  25.4 } // mm
 
   // Comment out any sides which are unreachable by the probe. For best
   // auto-calibration results, all sides must be reachable.
@@ -842,12 +850,14 @@
 
   // Probing at the exact top center only works if the center is flat. If
   // probing on a screwhead or hollow washer, probe near the edges.
-  //#define CALIBRATION_MEASURE_AT_TOP_EDGES
+  #define CALIBRATION_MEASURE_AT_TOP_EDGES
 
   // Define the pin to read during calibration
   #ifndef CALIBRATION_PIN
-    //#define CALIBRATION_PIN -1            // Define here to override the default pin
-    #define CALIBRATION_PIN_INVERTING false // Set to true to invert the custom pin
+    //FSIGAP - set to pin 30
+    #define CALIBRATION_PIN 30            // Define here to override the default pin
+    //FSIGAP - invert probe input
+    #define CALIBRATION_PIN_INVERTING true // Set to true to invert the custom pin
     //#define CALIBRATION_PIN_PULLDOWN
     #define CALIBRATION_PIN_PULLUP
   #endif
@@ -869,6 +879,7 @@
 //#define MICROSTEP2 HIGH,LOW,LOW
 //#define MICROSTEP4 LOW,HIGH,LOW
 //#define MICROSTEP8 HIGH,HIGH,LOW
+// FSIGAP - enable microsteps
 //#define MICROSTEP16 LOW,LOW,HIGH
 //#define MICROSTEP32 HIGH,LOW,HIGH
 
@@ -1642,11 +1653,12 @@
 //FSIGAP - enable probe
 #define G38_PROBE_TARGET
 #if ENABLED(G38_PROBE_TARGET)
-  //#define G38_PROBE_AWAY        // Include G38.4 and G38.5 to probe away from target
+  #define G38_PROBE_AWAY        // Include G38.4 and G38.5 to probe away from target
   #define G38_MINIMUM_MOVE 0.0275 // (mm) Minimum distance that will produce a move.
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
+
 #define MIN_STEPS_PER_SEGMENT 6
 
 /**
@@ -2856,7 +2868,7 @@
   #define USER_DESC_1 "Home XYZ drop Z align"
   //FSIGAP update with newer homing code
   //#define USER_GCODE_1 "G28 X Y\nM220 S100\nG0 X250Y5\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P2000\nM17\nG4 P500\nM220 S100\nG91\nG0 Z70\nG90\nG28 Z\nM220 S100\nG0 X0 Z40\nG0 Y150\nG0 Y100\nG0 Y150\nG0 X0Y10"
-  #define USER_GCODE_1 "G54\nG28 X Y\nM220 S200\nG0 X640Y0\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P3000\nG92 Z0\nM17\nM220 S100\nG91\nG0 Z70\nG90\nM280 P0 S92\nG4 P300\nM280 P0 S93\nG4 P300\nG28 Z\nG92 Z26\nM280 P0 S140\nM220 S300\nG0 X0 Z40\nM220 S100"
+  #define USER_GCODE_1 "G54\nG28 X Y\nG0 F4000\nG0 X640Y0\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P3000\nG92 Z0\nM17\nG91\nG0 Z70\nG90\nM280 P0 S90\nG4 P300\nM280 P0 S92\nG4 P300\nM280 P0 S93\nG4 P300\nG28 Z\nG92 Z26\nG0 X1200  Z40\nM280 P0 S140"
 //  G28 X Y\nM220 S100\nG0 X250Y5\nG91\nG0 Z10\nG91\nG0 Z-5\nM18 Z\nG90\nG4 P2000\nM17\nG4 P500\nM220 S100\nG91\nG0 Z70\nG90\nG28 Z\nM220 S100\nG0 X0 Z40\nG0 Y150\nG0 Y100\nG0 Y150\nG0 X0Y10"
 
   //FSIGAP
@@ -2874,7 +2886,11 @@
   
   //FSIGAP - Add park command
   #define USER_DESC_5 "Park"
-  #define USER_GCODE_5 "G54\nG90\nG0 Z70\nG0 X640Y0\nG0 Z10"
+  #define USER_GCODE_5 "G54\nG95\nG0 Z85\nG0 X640Y0\nG0 Z10"
+
+  //FSIGAP - Add park command
+  #define USER_DESC_6 "Probe Z, Zero X&Y"
+  #define USER_GCODE_6 "G54\nG38.2 Z0 F60\nG55\nG92 Z19.2 X0 Y0\nG0 Z25 F1000"
 
   // #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
   // #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
@@ -3010,9 +3026,9 @@
   // #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
   // #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
   // #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
-  #define JOY_X_LIMITS { 5600, 8200-100, 8200+100, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
-  #define JOY_Y_LIMITS { 6300, 8800-100, 8800+100, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
-  #define JOY_Z_LIMITS { 5800, 8880-100, 8880+100, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
+  #define JOY_X_LIMITS { 5600, 8200-140, 8200+140, 10700 } //FSIGAP - used to be 5600, 8190-100, 8190+100, 10800 // min, deadzone start, deadzone end, max
+  #define JOY_Y_LIMITS { 6300, 8800-140, 8800+140, 11000 }  //FSIGAP used to be  5600, 8250-100, 8250+100, 11000
+  #define JOY_Z_LIMITS { 5800, 8880-140, 8880+140, 11850 } //FSIGAP - used to be  4800, 8080-100, 8080+100, 11550
 #endif
 
 /**
