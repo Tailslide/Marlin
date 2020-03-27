@@ -34,7 +34,7 @@
 #endif
 
 #if ENABLED(EXTENSIBLE_UI)
-  #include "../../lcd/extensible_ui/ui_api.h"
+  #include "../../lcd/extui/ui_api.h"
 #endif
 
 #if HAS_LEDS_OFF_FLAG
@@ -56,11 +56,11 @@ void GcodeSuite::M0_M1() {
 
   planner.synchronize();
 
-  #if HAS_LEDS_OFF_FLAG
+  #if HAS_LCD_MENU || HAS_LEDS_OFF_FLAG
     const bool seenQ = parser.seen('Q');
-    if (seenQ) printerEventLEDs.onPrintCompleted();      // Change LED color for Print Completed
-  #else
-    constexpr bool seenQ = false;
+    #if HAS_LEDS_OFF_FLAG
+      if (seenQ) printerEventLEDs.onPrintCompleted();  // Change LED color for Print Completed
+    #endif
   #endif
 
   #if HAS_LCD_MENU
@@ -105,7 +105,7 @@ void GcodeSuite::M0_M1() {
   #endif
 
   #if HAS_LCD_MENU
-    ui.reset_status();
+    if (!seenQ) ui.reset_status();
   #endif
 
   wait_for_user = false;
