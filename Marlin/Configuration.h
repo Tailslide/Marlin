@@ -747,7 +747,7 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
  //FSIGAP - reduce Z max feedrate to prevent skipping when feedrate maxed out and lowrider weight all near one screw
-#define DEFAULT_MAX_FEEDRATE          { 220, 220, 6, 25} // fsigap was 120,120
+#define DEFAULT_MAX_FEEDRATE          { 220, 220, 14, 25} // fsigap was 120,120
 //#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 220 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -762,7 +762,7 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 //FSIGAP - reduce Z accel to prevent skipping when feedrate maxed out and lowrider weight all near one screw
-#define DEFAULT_MAX_ACCELERATION      { 400, 400, 25, 2000 }
+#define DEFAULT_MAX_ACCELERATION      { 600, 600, 25, 2000 }
 //#define DEFAULT_MAX_ACCELERATION      { 400, 400, 25, 400 }
 //#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 400 }
 
@@ -785,7 +785,7 @@
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 //FSIGAP
 //#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
-#define DEFAULT_TRAVEL_ACCELERATION   400    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   600    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
